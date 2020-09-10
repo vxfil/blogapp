@@ -36,13 +36,14 @@ export const uploadImage = async (
   req: express.Request,
   res: express.Response
 ) => {
-  console.log(req.body);
-  // try {
-  //   const { image } = req.body;
-  //   const uploaded = await cloudinary.uploader.upload(image);
-  //   return res.send(uploaded.url);
-  // } catch (error) {
-  //   console.log(error);
-  //   res.status(500).send('Failure');
-  // }
+  try {
+    const { buffer, mimetype } = req.file;
+    const data = buffer.toString('base64');
+    const uri = `data:${mimetype};base64,${data}`;
+    const uploaded = await cloudinary.uploader.upload(uri);
+    return res.json({ url: uploaded.url });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Failure');
+  }
 };

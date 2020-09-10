@@ -2,6 +2,10 @@ import express from 'express';
 import * as PostsController from '../controllers/postsController';
 import pasport from 'passport';
 
+import multer from 'multer';
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 const postsRouter = express.Router();
 
 postsRouter.get(
@@ -12,7 +16,8 @@ postsRouter.get(
 
 postsRouter.post(
   '/upload_image',
-  //pasport.authenticate('jwt', { session: false }),
+  pasport.authenticate('jwt', { session: false }),
+  upload.single('upload'),
   PostsController.uploadImage
 );
 
