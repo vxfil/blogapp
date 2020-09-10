@@ -17,7 +17,7 @@ export const Profile = () => {
   });
 
   return (
-    <div className="hero is-light is-fullheight-with-navbar ">
+    <div className="hero is-light is-fullheight-with-navbar">
       <div className="section">
         <div className="columns">
           <div className="column is-one-third">

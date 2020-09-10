@@ -1,4 +1,5 @@
 import express from 'express';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const posts = async (req: express.Request, res: express.Response) => {
   const posts = [
@@ -29,4 +30,19 @@ export const posts = async (req: express.Request, res: express.Response) => {
     },
   ];
   res.send({ posts });
+};
+
+export const uploadImage = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  console.log(req.body);
+  // try {
+  //   const { image } = req.body;
+  //   const uploaded = await cloudinary.uploader.upload(image);
+  //   return res.send(uploaded.url);
+  // } catch (error) {
+  //   console.log(error);
+  //   res.status(500).send('Failure');
+  // }
 };

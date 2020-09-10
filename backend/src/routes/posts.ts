@@ -10,4 +10,10 @@ postsRouter.get(
   PostsController.posts
 );
 
+postsRouter.post(
+  '/upload_image',
+  //pasport.authenticate('jwt', { session: false }),
+  PostsController.uploadImage
+);
+
 export default postsRouter;
