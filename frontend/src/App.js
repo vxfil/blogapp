@@ -12,7 +12,8 @@ import { Profile } from './pages/Profile';
 import { About } from './pages/About';
 import { PassConfirm } from './pages/PassConfirm';
 import { Page404 } from './pages/Page404';
-import { CreatePost } from './pages/CreatePost';
+import { CreatePost } from './pages/CreatePost/CreatePost';
+import { Post } from './components/Post';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/forgot" component={Forgot} />
           <Route path="/passconfirm" component={PassConfirm} />
           <Route exact path="/posts" component={Posts} />
+          <Route path="/posts/:postId" component={Post} />
           <Route path="/createpost" component={CreatePost} />
           <Route path="/profile" component={Profile} />
           <Route path="/about" component={About} />

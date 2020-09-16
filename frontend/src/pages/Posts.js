@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { loadPosts } from '../store/actions/postsActions';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import { Post } from '../components/Post';
+import { PostPreview } from '../components/PostPreview';
+
+import { Route, useRouteMatch } from 'react-router-dom';
 
 export const Posts = () => {
-  const dispatch = useDispatch();
-  const posts = useSelector((state) => state.postReducer.posts);
-
+  // const dispatch = useDispatch();
+  // const posts = useSelector((state) => state.postReducer.posts);
+  let [posts, setPosts] = useState([]);
   let [currentPage, setCurrentPage] = useState(1);
-  let [totalPages, setTotalPages] = useState(10);
+  let [totalPages, setTotalPages] = useState(1);
+
+  let { path } = useRouteMatch();
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:4000/main/get_posts?p=1&l=2`)
+      .then((res) => {
+        console.log(res);
+        const { totalPages, posts } = res.data;
+        console.log(posts);
+        setTotalPages(totalPages);
+        setPosts(posts);
+        console.log(posts);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const generateNumOfPages = () => {
     const pages = [];
@@ -29,8 +47,21 @@ export const Posts = () => {
     ) {
       return 'pagination-link';
     }
-
     return 'pagination-link is-hidden';
+  };
+
+  const pageSelectionHandler = (page) => {
+    axios
+      .get(`http://localhost:4000/main/get_posts?p=${page}&l=2`)
+      .then((res) => {
+        console.log(res);
+        const { totalPages, posts } = res.data;
+        setTotalPages(totalPages);
+        setPosts(posts);
+        console.log(posts);
+      })
+      .catch((err) => console.log(err));
+    setCurrentPage(page);
   };
 
   const next = () => {
@@ -48,20 +79,24 @@ export const Posts = () => {
   };
 
   return (
-    <div className="hero is-fullheight-with-navbar">
+    <div className="hero has-background-info-light is-fullheight-with-navbar">
       <div className="container">
-        <h1>Posts page</h1>
-        <button
-          className="button is-success"
-          onClick={() => dispatch(loadPosts())}
-        >
-          Download posts
-        </button>
         {posts.map((post, index) => {
-          return <Post title={post.title} content={post.content} key={index} />;
+          return (
+            <PostPreview
+              content={post.content}
+              preview={post.preview}
+              date={post.createdAt}
+              userId={post.userId}
+              _id={post._id}
+              content={post.content}
+              key={index}
+            />
+          );
         })}
+        <Route path={`${path}/:postId`} component={Post} />
       </div>
-      {/* // POSTS */}
+
       <div className="footer" style={{ padding: '1.5rem' }}>
         <nav
           className="pagination is-centered"
@@ -81,7 +116,7 @@ export const Posts = () => {
           <ul className="pagination-list">
             <li>
               <a
-                onClick={() => setCurrentPage(1)}
+                onClick={() => pageSelectionHandler(1)}
                 className={
                   1 === currentPage
                     ? 'pagination-link is-current'
@@ -102,7 +137,7 @@ export const Posts = () => {
               return (
                 <li key={ind}>
                   <a
-                    onClick={() => setCurrentPage(page)}
+                    onClick={() => pageSelectionHandler(page)}
                     className={generateClassName(page)}
                     aria-label={
                       page === currentPage
@@ -124,7 +159,7 @@ export const Posts = () => {
             {totalPages < 2 ? null : (
               <li>
                 <a
-                  onClick={() => setCurrentPage(totalPages)}
+                  onClick={() => pageSelectionHandler(totalPages)}
                   className={
                     totalPages === currentPage
                       ? 'pagination-link is-current'

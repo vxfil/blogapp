@@ -1,36 +1,6 @@
 import express from 'express';
 import { v2 as cloudinary } from 'cloudinary';
-
-export const posts = async (req: express.Request, res: express.Response) => {
-  const posts = [
-    {
-      title: 'post 1',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    },
-    {
-      title: 'post 2',
-      content:
-        'Eu volutpat odio facilisis mauris sit amet massa. Blandit volutpat maecenas volutpat blandit. Et netus et malesuada fames ac.',
-    },
-    {
-      title: 'post 3',
-      content:
-        'Sagittis orci a scelerisque purus semper eget duis. Morbi leo urna molestie at elementum eu facilisis.',
-    },
-    {
-      title: 'post 4',
-      content:
-        'Pellentesque dignissim enim sit amet venenatis. Viverra nibh cras pulvinar mattis nunc sed.',
-    },
-    {
-      title: 'post 5',
-      content:
-        'Dapibus ultrices in iaculis nunc sed. Nibh tellus molestie nunc non.',
-    },
-  ];
-  res.send({ posts });
-};
+import { PostModel } from '../models/postModel';
 
 export const uploadImage = async (
   req: express.Request,
@@ -45,5 +15,57 @@ export const uploadImage = async (
   } catch (err) {
     console.log(err);
     res.status(500).send('Failure');
+  }
+};
+
+export const createPost = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { userId, content, preview } = req.body;
+    const saved = await new PostModel({
+      userId,
+      content,
+      preview,
+    }).save();
+    console.log(saved);
+    res.send(saved);
+  } catch (err) {
+    console.log(err);
+    res.status(501).send('Something went wrong!');
+  }
+};
+
+export const getPosts = async (req: express.Request, res: express.Response) => {
+  const { p, l } = req.query;
+  console.log(p, l);
+  const page = Number(p);
+  const limit = Number(l);
+  try {
+    const posts = await PostModel.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+    const count = await PostModel.countDocuments();
+
+    res.send({
+      posts,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    });
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+export const getPost = async (req: express.Request, res: express.Response) => {
+  try {
+    const id = req.params.id;
+    const post = await PostModel.findById(id).select('content');
+    res.send(post);
+  } catch (err) {
+    res.status(403).send(err);
   }
 };

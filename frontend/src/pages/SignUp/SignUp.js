@@ -51,7 +51,10 @@ export const SignUp = ({ history }) => {
   const [error, setError] = useState('');
 
   return (
-    <div className="hero is-fullheight" style={{ justifyContent: 'center' }}>
+    <div
+      className="hero has-background-info-light is-fullheight"
+      style={{ justifyContent: 'center' }}
+    >
       <div className="columns is-centered is-vcentered is-desktop">
         <div className="column is-one-quarter">
           {error ? (

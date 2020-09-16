@@ -8,17 +8,28 @@ const upload = multer({ storage: storage });
 
 const postsRouter = express.Router();
 
-postsRouter.get(
-  '/posts',
-  pasport.authenticate('jwt', { session: false }),
-  PostsController.posts
+postsRouter.post(
+  '/upload_image',
+  upload.single('upload'),
+  PostsController.uploadImage
 );
 
 postsRouter.post(
-  '/upload_image',
+  '/create_post',
   pasport.authenticate('jwt', { session: false }),
-  upload.single('upload'),
-  PostsController.uploadImage
+  PostsController.createPost
+);
+
+postsRouter.get(
+  '/get_posts',
+  pasport.authenticate('jwt', { session: false }),
+  PostsController.getPosts
+);
+
+postsRouter.get(
+  '/get_post/:id',
+  pasport.authenticate('jwt', { session: false }),
+  PostsController.getPost
 );
 
 export default postsRouter;

@@ -19,7 +19,10 @@ export const Forgot = () => {
   });
 
   return (
-    <div className="hero is-fullheight" style={{ justifyContent: 'center' }}>
+    <div
+      className="hero is-fullheight has-background-info-light"
+      style={{ justifyContent: 'center' }}
+    >
       <div className="columns is-desktop is-centered is-vcentered">
         <div className="column is-one-quarter">
           <div className="box">

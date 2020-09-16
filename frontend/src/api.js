@@ -19,6 +19,7 @@ axios.interceptors.response.use(
     return response;
   },
   (error) => {
+    console.log(error.config);
     const originalRequest = error.config;
     let refreshToken = localStorage.getItem('refreshToken');
     if (

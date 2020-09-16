@@ -7,17 +7,16 @@ import { getProfileInfoAction } from '../store/actions/getProfileInfoAction';
 
 export const Profile = () => {
   const dispatch = useDispatch();
-
   const fetchData = async () => {
     const id = localStorage.getItem('_id');
     return dispatch(getProfileInfoAction(id));
   };
   useEffect(() => {
     fetchData();
-  });
+  }, []);
 
   return (
-    <div className="hero is-light is-fullheight-with-navbar">
+    <div className="hero has-background-info-light is-fullheight-with-navbar">
       <div className="section">
         <div className="columns">
           <div className="column is-one-third">
