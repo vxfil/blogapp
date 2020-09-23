@@ -41,7 +41,7 @@ export const CreatePost = () => {
   };
 
   const onSubmit = async () => {
-    const preview = previewExtractor(content, 1);
+    const preview = previewExtractor(content, 2);
     console.log(preview);
     return axios
       .post('http://localhost:4000/main/create_post', {

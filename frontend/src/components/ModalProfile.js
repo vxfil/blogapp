@@ -57,7 +57,7 @@ export const ModalProfile = ({ active }) => {
       setAvatar(profileSettings.avatar);
     }
     return;
-  });
+  }, [profileSettings]);
 
   const chooseFileHandler = (event) => {
     const file = event.target.files[0];

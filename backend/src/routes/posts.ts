@@ -32,4 +32,22 @@ postsRouter.get(
   PostsController.getPost
 );
 
+postsRouter.post(
+  '/write_comment',
+  pasport.authenticate('jwt', { session: false }),
+  PostsController.writeComment
+);
+
+postsRouter.get(
+  '/get_comments/:postId',
+  pasport.authenticate('jwt', { session: false }),
+  PostsController.getComments
+);
+
+postsRouter.patch(
+  '/update_comment',
+  pasport.authenticate('jwt', { session: false }),
+  PostsController.updateComment
+);
+
 export default postsRouter;

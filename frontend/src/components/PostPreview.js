@@ -17,19 +17,19 @@ export const PostPreview = ({ preview, date, userId, _id }) => {
         setProfileInfo(res.data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [userId]);
 
   return (
     <div className="box mt-5">
       <article className="media">
         <figure className="media-left">
-          <p className="image is-96x96">
+          <div className="image is-96x96">
             {profileInfo.avatar ? (
               <img src={profileInfo.avatar} />
             ) : (
               <img src="https://bulma.io/images/placeholders/96x96.png" />
             )}
-          </p>
+          </div>
           <span className="tag is-white">{profileInfo.username}</span>
         </figure>
         <div className="media-content">

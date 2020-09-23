@@ -7,8 +7,6 @@ import { PostPreview } from '../components/PostPreview';
 import { Route, useRouteMatch } from 'react-router-dom';
 
 export const Posts = () => {
-  // const dispatch = useDispatch();
-  // const posts = useSelector((state) => state.postReducer.posts);
   let [posts, setPosts] = useState([]);
   let [currentPage, setCurrentPage] = useState(1);
   let [totalPages, setTotalPages] = useState(1);
@@ -21,10 +19,8 @@ export const Posts = () => {
       .then((res) => {
         console.log(res);
         const { totalPages, posts } = res.data;
-        console.log(posts);
         setTotalPages(totalPages);
         setPosts(posts);
-        console.log(posts);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -68,6 +64,7 @@ export const Posts = () => {
     if (currentPage === totalPages) {
       return;
     }
+    pageSelectionHandler(currentPage + 1);
     return setCurrentPage((currentPage += 1));
   };
 
@@ -75,6 +72,7 @@ export const Posts = () => {
     if (currentPage === 1) {
       return;
     }
+    pageSelectionHandler(currentPage - 1);
     return setCurrentPage((currentPage -= 1));
   };
 
@@ -84,12 +82,10 @@ export const Posts = () => {
         {posts.map((post, index) => {
           return (
             <PostPreview
-              content={post.content}
               preview={post.preview}
               date={post.createdAt}
               userId={post.userId}
               _id={post._id}
-              content={post.content}
               key={index}
             />
           );
