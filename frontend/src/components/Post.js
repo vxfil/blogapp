@@ -9,6 +9,11 @@ import { CommentCreator } from './CommentCreator';
 export const Post = () => {
   const [content, setContent] = useState('');
   const [userInfo, setUserInfo] = useState({});
+  const [date, setDate] = useState('');
+  const [likes, setLikes] = useState([]);
+  const [numOfLikes, setNumOfLikes] = useState(null);
+  const [likeResult, setLikeResult] = useState('');
+
   const { postId } = useParams();
 
   useEffect(() => {
@@ -20,9 +25,35 @@ export const Post = () => {
           avatar: res.data.avatar,
           username: res.data.username,
         });
+        setDate(res.data.date);
+        setLikes(res.data.likes);
+        setNumOfLikes(res.data.likes.length);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [likeResult]);
+
+  const likesHandler = () => {
+    const userId = localStorage.getItem('_id');
+    if (likes.includes(userId)) {
+      return axios
+        .patch('http://localhost:4000/main/likes_handler', {
+          userId,
+          postId,
+          actionType: 'decrement',
+        })
+        .then((res) => setLikeResult(res.data))
+        .catch((err) => console.log(err));
+    } else {
+      return axios
+        .patch('http://localhost:4000/main/likes_handler', {
+          userId,
+          postId,
+          actionType: 'increment',
+        })
+        .then((res) => setLikeResult(res.data))
+        .catch((err) => console.log(err));
+    }
+  };
 
   return (
     <div className="hero has-background-info-light is-fullheight-with-navbar">
@@ -44,8 +75,11 @@ export const Post = () => {
               <div className="level-left">
                 <a className="level-item">
                   <span className="icon is-small">
-                    <i className="fas fa-heart"></i>
-                    <p>5</p>
+                    <i
+                      className="fas fa-heart"
+                      onClick={() => likesHandler()}
+                    ></i>
+                    <p>{numOfLikes < 1 ? null : numOfLikes}</p>
                   </span>
                 </a>
               </div>
@@ -53,7 +87,7 @@ export const Post = () => {
           </div>
           <div className="media-right">
             <span className="tag is-info is-light">
-              {moment().format('DD.MM.YYYY')}
+              {moment(date).format('DD.MM.YYYY')}
             </span>
           </div>
         </article>

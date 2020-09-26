@@ -82,11 +82,12 @@ export const Posts = () => {
         {posts.map((post, index) => {
           return (
             <PostPreview
+              key={index}
               preview={post.preview}
               date={post.createdAt}
               userId={post.userId}
-              _id={post._id}
-              key={index}
+              postId={post._id}
+              likesFromServer={post.likes}
             />
           );
         })}

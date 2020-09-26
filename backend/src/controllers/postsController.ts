@@ -47,7 +47,7 @@ export const getPosts = async (req: express.Request, res: express.Response) => {
     const posts = await PostModel.find()
       .limit(limit * 1)
       .skip((page - 1) * limit)
-      .select(['preview', 'createdAt', 'userId', '_id'])
+      .select(['preview', 'createdAt', 'userId', '_id', 'likes'])
       .exec();
 
     const count = await PostModel.countDocuments();
@@ -65,7 +65,12 @@ export const getPosts = async (req: express.Request, res: express.Response) => {
 export const getPost = async (req: express.Request, res: express.Response) => {
   try {
     const id = req.params.id;
-    const post = await PostModel.findById(id).select(['content', 'userId']);
+    const post = await PostModel.findById(id).select([
+      'content',
+      'userId',
+      'createdAt',
+      'likes',
+    ]);
     const userId = post?.userId;
     const userInfo = await UserModel.findById(userId).select([
       'avatar',
@@ -73,8 +78,10 @@ export const getPost = async (req: express.Request, res: express.Response) => {
     ]);
     res.send({
       content: post?.content,
+      date: post?.createdAt,
       avatar: userInfo?.avatar,
       username: userInfo?.username,
+      likes: post?.likes,
     });
   } catch (err) {
     res.status(403).send(err);
@@ -129,6 +136,29 @@ export const updateComment = async (
     const comment = await CommentModel.findById(commentId);
     const lastReply = comment?.replys[comment.replys.length - 1];
     res.send(lastReply);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const likesHandler = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const { userId, postId, actionType } = req.body;
+    console.log(actionType);
+    if (actionType === 'increment') {
+      await PostModel.findByIdAndUpdate(postId, {
+        $push: { likes: userId },
+      });
+      res.send('liked!');
+    } else if (actionType === 'decrement') {
+      await PostModel.findByIdAndUpdate(postId, {
+        $pull: { likes: userId },
+      });
+      res.send('disliked!');
+    }
   } catch (err) {
     console.log(err);
   }

@@ -5,7 +5,13 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 
-export const PostPreview = ({ preview, date, userId, _id }) => {
+export const PostPreview = ({
+  preview,
+  date,
+  userId,
+  postId,
+  likesFromServer,
+}) => {
   const [profileInfo, setProfileInfo] = useState({});
 
   let { url } = useRouteMatch();
@@ -36,17 +42,17 @@ export const PostPreview = ({ preview, date, userId, _id }) => {
           <div className="content">{ReactHtmlParser(preview)}</div>
           <nav className="level">
             <div className="level-left">
-              <a className="level-item">
+              <a className="level-item" style={{ cursor: 'default' }}>
                 <span className="icon is-small">
                   <i className="fas fa-heart"></i>
-                  <p>5</p>
+                  {<p>{likesFromServer.length}</p>}
                 </span>
               </a>
             </div>
             <div className="level-right">
               <a className="level-item">
                 <span className="tag is-light is-medium">
-                  <Link to={`${url}/${_id}`} style={{ color: 'black' }}>
+                  <Link to={`${url}/${postId}`} style={{ color: 'black' }}>
                     Read more ...
                   </Link>
                 </span>

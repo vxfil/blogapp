@@ -50,4 +50,10 @@ postsRouter.patch(
   PostsController.updateComment
 );
 
+postsRouter.patch(
+  '/likes_handler',
+  pasport.authenticate('jwt', { session: false }),
+  PostsController.likesHandler
+);
+
 export default postsRouter;
